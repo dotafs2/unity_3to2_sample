@@ -1,9 +1,7 @@
-
 Shader "Custom/Toon"
 {
 	Properties
 	{
-        _LightColor("Light Color", Color) = (1,1,1,1)
 		_Color("Color", Color) = (0.5, 0.65, 1, 1)
 		_MainTex("Main Texture", 2D) = "white" {}	
         [HDR]
@@ -28,8 +26,10 @@ Shader "Custom/Toon"
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			
+            #pragma multi_compile_fwdbase
+			#include "AutoLight.cginc"
 			#include "UnityCG.cginc"
+            #include "Lighting.cginc"
 
 			struct appdata
 			{
@@ -44,6 +44,7 @@ Shader "Custom/Toon"
 				float2 uv : TEXCOORD0;
                 float3 worldNormal : NORMAL;
                 float3 viewDir : TEXCOORD1;
+                SHADOW_COORDS(2)
 			};
 
 			sampler2D _MainTex;
@@ -56,11 +57,11 @@ Shader "Custom/Toon"
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
+                TRANSFER_SHADOW(o)
 				return o;
 			}
 			
 			float4 _Color;
-            float4 _LightColor;
             float4 _AmbientColor;
             float _Glossiness;
             float4 _SpecularColor;
@@ -76,9 +77,9 @@ Shader "Custom/Toon"
                 float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
                 float NdotH = dot(normal, halfVector);
                 float4 sample = tex2D(_MainTex, i.uv);
-                float lightIntensity = smoothstep(0, 0.01, NdotL);
-
-                float4 light = lightIntensity * _LightColor;
+                float shadow = SHADOW_ATTENUATION(i);
+                float lightIntensity = smoothstep(0, 0.01, NdotL * shadow);
+                float4 light = lightIntensity * _LightColor0;
                 float specularIntensity = pow(NdotH * lightIntensity, _Glossiness * _Glossiness);
                 float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);
                 float4 specular = specularIntensitySmooth * _SpecularColor;
