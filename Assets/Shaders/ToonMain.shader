@@ -1,4 +1,4 @@
-Shader "Custom/Toon"
+Shader "FSShader/Toon Basic"
 {
 	Properties
 	{
