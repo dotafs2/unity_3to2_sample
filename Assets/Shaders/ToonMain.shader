@@ -27,6 +27,7 @@ Shader "FSShader/Toon Basic"
 			#pragma vertex vert
 			#pragma fragment frag
             #pragma multi_compile_fwdbase
+			#pragma multi_compile_instancing
 			#include "AutoLight.cginc"
 			#include "UnityCG.cginc"
             #include "Lighting.cginc"

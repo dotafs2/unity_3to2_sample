@@ -13,14 +13,17 @@ Shader "FSShader/Toon Water"
         _RimColor("Rim Color", Color) = (1,1,1,1)
         _RimAmount("Rim Amount", Range(0, 1)) = 0.716
         _RimThreshold("Rim Threshold", Range(0, 1)) = 0.1
+        _Transparency("Transparency", Range(0, 1)) = 0.5
 	}
 	SubShader
 	{
         Tags
 {
 	"LightMode" = "ForwardBase"
+    "Queue" = "Transparent"
 	"PassFlags" = "OnlyDirectional"
-}
+} 
+        Blend SrcAlpha OneMinusSrcAlpha
 		Pass
 		{
 			CGPROGRAM
@@ -68,6 +71,7 @@ Shader "FSShader/Toon Water"
             float4 _RimColor;
             float _RimAmount;
             float _RimThreshold;
+            float _Transparency; 
 			float4 frag (v2f i) : SV_Target
 			{
 
@@ -91,7 +95,7 @@ Shader "FSShader/Toon Water"
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 float4 rim = rimIntensity * _RimColor;
 
-				return _Color * sample * (_AmbientColor + light + 2 * specular + rim);
+				return _Color * sample * (_AmbientColor + light + 2 * specular + rim) * _Transparency;
 			}
 			ENDCG
 		}

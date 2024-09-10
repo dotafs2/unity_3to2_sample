@@ -14,7 +14,7 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -103,6 +103,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SunSpecularExponent: 2
+    - _Transparency: 0.5
     - _UVSec: 0
     - _Wave1Amplitude: 1
     - _Wave1Direction: 0.88
